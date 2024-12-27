@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-public record BookingDTO(
+public record BookingRequestDTO(
         @NotBlank String userEmail,
 
         @Future String bookingStartDate,
