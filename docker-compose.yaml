@@ -12,6 +12,9 @@ services:
     image: postgres:latest
     env_file:
       - docker.env
+    environment:
+      - TZ=Europe/Athens
+      - PGTZ=Europe/Athens
     ports:
       - "5432:5432"
     healthcheck:

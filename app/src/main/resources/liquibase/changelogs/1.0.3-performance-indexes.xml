@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1.0.3-1" author="acme_booking_db_mig" dbms="postgresql">
+        <tagDatabase tag="1.0.3-performance-indexes-tag"/>
+    </changeSet>
+
+    <changeSet id="1.0.3-2" author="acme_booking_db_mig">
+        <createIndex tableName="room" indexName="idx_room_name">
+            <column name="room_name"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="room" indexName="idx_room_name"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1.0.3-3" author="acme_booking_db_mig">
+        <createIndex tableName="booking" indexName="idx_booking_room_dates">
+            <column name="room_id"/>
+            <column name="booking_start_time"/>
+            <column name="booking_end_time"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

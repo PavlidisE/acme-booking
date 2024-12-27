@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1.0.2-1" author="acme_booking_db_mig" dbms="postgresql">
+        <tagDatabase tag="1.0.2-booking-ddl-tag"/>
+    </changeSet>
+
+    <changeSet id="1.0.2-2" author="acme_booking_db_mig" dbms="postgresql">
+        <createTable tableName="booking">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="room_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="booking_start_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="booking_end_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="booking"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1.0.2-3" author="acme_booking_db" dbms="postgresql">
+        <addForeignKeyConstraint baseTableName="booking" baseColumnNames="room_id" constraintName="fk_booking_room"
+                                 referencedTableName="room" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="booking" baseColumnNames="user_id" constraintName="fk_booking_user"
+                                 referencedTableName="user" referencedColumnNames="id"/>
+
+        <rollback>
+            <dropAllForeignKeyConstraints baseTableName="booking"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
