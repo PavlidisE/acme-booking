@@ -1,11 +1,18 @@
 name: acme-booking
 
 services:
-
-# TODO Containerize App
-#  app:
-#    build:
-#      ./
+  app:
+    container_name: acme_booking_app
+    hostname: acme_booking_app
+    build: .
+    depends_on:
+      - db
+    env_file:
+      - docker.env
+    ports:
+      - "8080:8080"
+    networks:
+      - acme-booking-network
 
   db:
     container_name: acme_booking_db
