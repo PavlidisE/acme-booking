@@ -19,8 +19,12 @@
 
         <postgres.version>42.7.4</postgres.version>
         <apache.commons.version>4.5.0-M2</apache.commons.version>
-        <spock.version>2.4-M1-groovy-4.0</spock.version>
         <jakarta.validation.version>3.1.0</jakarta.validation.version>
+
+        <springdoc.version>2.7.0</springdoc.version>
+        <swagger.annotations.version>2.2.27</swagger.annotations.version>
+
+        <spock.version>2.4-M1-groovy-4.0</spock.version>
     </properties>
 
     <dependencies>
@@ -28,13 +32,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <!--TODO Check for unwanted side-effects-->
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Database -->
         <dependency>
@@ -52,6 +49,22 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation.version}</version>
+        </dependency>
+        <!-- API -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.annotations.version}</version>
         </dependency>
         <!-- Utilities -->
         <dependency>
@@ -101,6 +114,35 @@
                     <target>${maven.compiler.target}</target>
                     <generatedSourcesDirectory>${project.build.directory}/generated-sources/annotations</generatedSourcesDirectory>
                 </configuration>
+            </plugin>
+            <!-- OpenAPI Documentation -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>start</goal>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Executes (mostly unit) tests during test phase of build lifecycle -->
             <plugin>
