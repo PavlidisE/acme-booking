@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1.0.0-1" dbms="postgresql" author="acme_booking_db_mig">
+        <tagDatabase tag="1.0.0-room-ddl-tag"/>
+    </changeSet>
+
+    <changeSet id="1.0.0-2" dbms="postgresql" author="acme_booking_db_mig">
+        <createTable tableName="room">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="room_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="room_capacity" type="smallint"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="room"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1.0.0-3" dbms="postgresql" author="acme_booking_db_mig">
+        <loadData relativeToChangelogFile="true" file="../rooms.csv" tableName="room"/>
+
+        <rollback>
+            <delete tableName="room"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

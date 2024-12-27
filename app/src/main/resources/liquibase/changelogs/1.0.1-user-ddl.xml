@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1.0.1-1" dbms="postgresql" author="acme_booking_db_mig">
+        <tagDatabase tag="1.0.1-user-ddl-tag"/>
+    </changeSet>
+
+    <changeSet id="1.0.1-2" dbms="postgresql" author="acme_booking_db_mig">
+        <sql>CREATE EXTENSION IF NOT EXISTS citext;</sql>
+
+        <sql>
+            CREATE DOMAIN email AS citext
+                CHECK ( value ~ '^[a-zA-Z0-9.!#$%&amp;''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' );
+        </sql>
+
+        <rollback>
+            <sql>
+                DROP DOMAIN email;
+            </sql>
+            <sql>
+                DROP EXTENSION IF EXISTS citext;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1.0.0-3" dbms="postgresql" author="acme_booking_db_mig">
+        <createTable tableName="user">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="email">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="user"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

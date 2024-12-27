@@ -1,0 +1,11 @@
+id,room_name,room_capacity
+1,"Main Conference Room",20
+2,"Conference Room 1",10
+3,"Conference Room 2",10
+4,"Conference Room 3",10
+5,"Conference Room 4",8
+6,"Conference Room 5",8
+7,"Small Conference Room 1",5
+8,"Small Conference Room 2",5
+9,"Small Conference Room 3",5
+10,Small Conference Room 4",4
