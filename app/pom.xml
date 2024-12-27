@@ -20,6 +20,7 @@
         <postgres.version>42.7.4</postgres.version>
         <apache.commons.version>4.5.0-M2</apache.commons.version>
         <spock.version>2.4-M1-groovy-4.0</spock.version>
+        <jakarta.validation.version>3.1.0</jakarta.validation.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,12 @@
             <artifactId>postgresql</artifactId>
             <version>${postgres.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <!-- Validation -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
         </dependency>
         <!-- Utilities -->
         <dependency>
