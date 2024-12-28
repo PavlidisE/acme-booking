@@ -40,7 +40,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./app/src/main/resources/liquibase:/liquibase/migrations
+      - ./src/main/resources/liquibase:/liquibase/migrations
     command:
       - update-testing-rollback
     env_file:

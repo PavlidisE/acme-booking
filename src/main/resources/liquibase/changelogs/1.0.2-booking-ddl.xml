@@ -37,7 +37,7 @@
         <addForeignKeyConstraint baseTableName="booking" baseColumnNames="room_id" constraintName="fk_booking_room"
                                  referencedTableName="room" referencedColumnNames="id"/>
         <addForeignKeyConstraint baseTableName="booking" baseColumnNames="user_id" constraintName="fk_booking_user"
-                                 referencedTableName="user" referencedColumnNames="id"/>
+                                 referencedTableName="acme_user" referencedColumnNames="id"/>
 
         <rollback>
             <dropAllForeignKeyConstraints baseTableName="booking"/>

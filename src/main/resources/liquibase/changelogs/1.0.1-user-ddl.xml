@@ -27,7 +27,7 @@
     </changeSet>
 
     <changeSet id="1.0.0-3" dbms="postgresql" author="acme_booking_db_mig">
-        <createTable tableName="user">
+        <createTable tableName="acme_user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

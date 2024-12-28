@@ -23,7 +23,7 @@ public class BookingEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private AcmeUserEntity acmeUser;
 
     @Future
     @Column(name = "booking_start_time", nullable = false)

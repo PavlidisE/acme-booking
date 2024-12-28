@@ -28,7 +28,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
      *
      */
 
-    @Query(value = "select * from booking b join room r on b.room_id = r.id join user u on b.user_id = u.id where b.room_id = :targetRoom AND (DATE(b.booking_start_time) <= :targetDate and DATE(b.booking_end_time) >= :targetDate)", nativeQuery = true)
+    @Query(value = "select * from booking b where b.room_id = :targetRoom AND (DATE(b.booking_start_time) <= :targetDate and DATE(b.booking_end_time) >= :targetDate)", nativeQuery = true)
     Page<BookingEntity> searchBookingsByRoomAndDate(@Param("targetRoom") Long targetRoom, @Param("targetDate") LocalDate targetDate, Pageable pageable);
 
 }
