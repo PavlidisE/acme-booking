@@ -2,6 +2,7 @@ package com.github.pavlidise.acmebooking.integration.rest;
 
 import com.github.pavlidise.acmebooking.model.dto.BookingRequestDTO;
 import com.github.pavlidise.acmebooking.model.dto.ConfirmedBookingDTO;
+import com.github.pavlidise.acmebooking.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,12 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("api/v1/bookings")
 public class BookingController {
+
+    private final BookingService bookingService;
+
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
 
     /**
      * Search for bookings by room name and/or booking date.
@@ -29,10 +36,11 @@ public class BookingController {
      */
     @GetMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Page<ConfirmedBookingDTO>> searchBookings(
-            @RequestParam(required = false) String roomName,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam String roomName,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Pageable pageable) {
-        return ResponseEntity.ok(null);
+        Page<ConfirmedBookingDTO> confirmedBookingDTOPage = bookingService.searchBookings(roomName, date, pageable);
+        return ResponseEntity.ok(confirmedBookingDTOPage);
     }
 
     /**
@@ -43,6 +51,7 @@ public class BookingController {
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ConfirmedBookingDTO> bookRoom(@Valid @RequestBody BookingRequestDTO bookingRequestDTO) {
-        return ResponseEntity.ok(null);
+        ConfirmedBookingDTO confirmedBookingDTO = bookingService.bookRoom(bookingRequestDTO);
+        return ResponseEntity.ok(confirmedBookingDTO);
     }
 }
