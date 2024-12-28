@@ -22,7 +22,7 @@ public class RoomEntity {
     private Long id;
 
     @NotBlank
-    @Column(name = "room_name", nullable = false)
+    @Column(name = "room_name", nullable = false, unique = true)
     private String roomName;
 
     @Positive

@@ -15,7 +15,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="room_name" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="room_capacity" type="smallint"/>
         </createTable>
