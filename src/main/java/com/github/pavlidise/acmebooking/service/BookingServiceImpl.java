@@ -10,11 +10,10 @@ import com.github.pavlidise.acmebooking.model.entity.BookingEntity;
 import com.github.pavlidise.acmebooking.model.entity.RoomEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -32,10 +31,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<ConfirmedBookingDTO> searchBookings(final BookingInquiryDTO bookingInquiryDTO, final Pageable pageable) {
+    public List<ConfirmedBookingDTO> searchBookings(final BookingInquiryDTO bookingInquiryDTO) {
         RoomEntity room = findRoomByName(bookingInquiryDTO.roomName());
-        Page<BookingEntity> bookingEntities = performBookingSearch(room.getId(), bookingInquiryDTO.date(), pageable);
-        return bookingEntities.map(BookingMapper.INSTANCE::mapConfirmedBookingFromBooking);
+        List<BookingEntity> bookingEntities = performBookingSearch(room.getId(), bookingInquiryDTO.date());
+        return bookingEntities.stream().map(BookingMapper.INSTANCE::mapConfirmedBookingFromBooking).toList();
     }
 
     private RoomEntity findRoomByName(final String roomName){
@@ -43,17 +42,16 @@ public class BookingServiceImpl implements BookingService {
         if(roomByName.isEmpty()){
             throw new RoomNotFoundException(roomName);
         }
-
         return roomByName.get();
     }
 
-    private Page<BookingEntity> performBookingSearch(final Long roomId, final LocalDate date, final Pageable pageable) {
-        // TODO investigate Pageable settings
-        return bookingRepository.searchBookingsByRoomAndDate(roomId, date, pageable);
+    private List<BookingEntity> performBookingSearch(final Long roomId, final LocalDate date) {
+        return bookingRepository.searchBookingsByRoomAndDateOrderByBookingStartTimeAsc(roomId, date);
     }
 
     @Override
     public ConfirmedBookingDTO bookRoom(final BookingRequestDTO bookingRequestDTO) {
         return null;
     }
+
 }

@@ -1,13 +1,12 @@
 package com.github.pavlidise.acmebooking.integration.repository;
 
 import com.github.pavlidise.acmebooking.model.entity.BookingEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
@@ -28,7 +27,11 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
      *
      */
 
-    @Query(value = "select * from booking b where b.room_id = :targetRoom AND (DATE(b.booking_start_time) <= :targetDate and DATE(b.booking_end_time) >= :targetDate)", nativeQuery = true)
-    Page<BookingEntity> searchBookingsByRoomAndDate(@Param("targetRoom") Long targetRoom, @Param("targetDate") LocalDate targetDate, Pageable pageable);
+    @Query(value =
+            "SELECT * FROM booking b " +
+            "WHERE b.room_id = :targetRoom AND (DATE(b.booking_start_time) <= :targetDate and DATE(b.booking_end_time) >= :targetDate) " +
+            "ORDER BY b.booking_start_time ASC", nativeQuery = true)
+    List<BookingEntity> searchBookingsByRoomAndDateOrderByBookingStartTimeAsc(@Param("targetRoom") Long targetRoom, @Param("targetDate") LocalDate targetDate);
+
 
 }

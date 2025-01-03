@@ -17,10 +17,17 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    /**
+     * Each Booking has one room associated with it, but each room can be associated with multiple bookings.
+     */
     @ManyToOne(optional = false)
     @JoinColumn(name = "room_id", nullable = false)
     private RoomEntity room;
 
+    /**
+     * Each Booking has one user associated with it, but each user can be associated with multiple bookings.
+     */
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private AcmeUserEntity acmeUser;

@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 
 @Validated
 public record BookingRequestDTO(
+
         @NotBlank String userEmail,
+
+        @NotBlank String roomName,
 
         @Future
         LocalDateTime bookingStartDateTime,
