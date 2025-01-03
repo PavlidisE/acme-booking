@@ -6,7 +6,8 @@ services:
     hostname: acme_booking_app
     build: .
     depends_on:
-      - db
+      db-migration:
+        condition: service_completed_successfully
     env_file:
       - docker.env
     ports:
@@ -49,7 +50,7 @@ services:
       LIQUIBASE_DRIVER: "org.postgresql.Driver"
       LIQUIBASE_LOG_LEVEL: "info"
       LIQUIBASE_LIQUIBASE_SCHEMA_NAME: "public"
-      LIQUIBASE_COMMAND_CHANGELOG_FILE: "/liquibase/migrations/master.xml"
+      LIQUIBASE_COMMAND_CHANGELOG_FILE: "/migrations/master.xml"
     networks:
       - acme-booking-network
 

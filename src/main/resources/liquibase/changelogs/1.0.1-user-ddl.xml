@@ -40,7 +40,7 @@
         </createTable>
 
         <rollback>
-            <dropTable tableName="user"/>
+            <dropTable tableName="acme_user"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>
