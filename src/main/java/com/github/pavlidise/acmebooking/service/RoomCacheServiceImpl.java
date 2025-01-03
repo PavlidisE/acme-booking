@@ -1,10 +1,10 @@
 package com.github.pavlidise.acmebooking.service;
 
 import com.github.pavlidise.acmebooking.integration.repository.RoomRepository;
+import com.github.pavlidise.acmebooking.model.entity.RoomEntity;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
-import com.github.pavlidise.acmebooking.model.entity.RoomEntity;
 
 import java.util.Optional;
 
@@ -23,6 +23,7 @@ public class RoomCacheServiceImpl implements RoomCacheService {
     @Override
     public Optional<RoomEntity> getRoomByName(String roomName) {
         Cache cache = cacheManager.getCache("rooms");
+        assert cache != null;
         RoomEntity roomEntity = cache.get(roomName, RoomEntity.class);
 
         // If not found in the cache, fetch from the database and cache the result
@@ -33,6 +34,6 @@ public class RoomCacheServiceImpl implements RoomCacheService {
                 return optionalRoomFromDB;
             }
         }
-        return Optional.of(roomEntity);
+        return Optional.ofNullable(roomEntity);
     }
 }

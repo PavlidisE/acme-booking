@@ -4,27 +4,18 @@ import com.github.pavlidise.acmebooking.model.entity.BookingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Repository
 public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
     /**
      * Booking Table
      * id | room_id | user_id | booking_start_time | booking_end_time
-     *
-         SELECT r.room_name,
-         u.user_email,
-         b.booking_start_time AS start_date_time,
-         b.booking_end_time   AS end_date_time
-         FROM booking b
-         JOIN
-         room r ON b.room_id = r.id
-         JOIN
-         "user" u ON b.user_id = u.id
-         WHERE b.room_id = :target_room AND (DATE(b.booking_start_time) <= :target_date AND DATE(b.booking_end_time) >= :target_date);
-     *
      */
 
     @Query(value =
@@ -33,5 +24,10 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
             "ORDER BY b.booking_start_time ASC", nativeQuery = true)
     List<BookingEntity> searchBookingsByRoomAndDateOrderByBookingStartTimeAsc(@Param("targetRoom") Long targetRoom, @Param("targetDate") LocalDate targetDate);
 
-
+    @Query(value =
+            "SELECT COUNT(b) > 0 FROM booking b WHERE b.room_id = :roomId " +
+            "AND b.booking_end_time > :startDate AND b.booking_start_time < :endDate", nativeQuery = true)
+    boolean existsOverlappingBooking(@Param("roomId") Long roomId,
+                                     @Param("startDate") LocalDateTime startDate,
+                                     @Param("endDate") LocalDateTime endDate);
 }

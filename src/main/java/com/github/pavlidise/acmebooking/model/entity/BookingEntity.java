@@ -2,7 +2,10 @@ package com.github.pavlidise.acmebooking.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,6 +13,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "booking")
 public class BookingEntity {
 
