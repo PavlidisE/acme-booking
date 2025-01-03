@@ -26,7 +26,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="1.0.0-3" dbms="postgresql" author="acme_booking_db_mig">
+    <changeSet id="1.0.1-3" dbms="postgresql" author="acme_booking_db_mig">
         <createTable tableName="acme_user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -41,6 +41,14 @@
 
         <rollback>
             <dropTable tableName="acme_user"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1.0.1-4" dbms="postgresql" author="acme_booking_db_mig">
+        <loadData relativeToChangelogFile="true" file="../users.csv" tableName="acme_user"/>
+
+        <rollback>
+            <delete tableName="acme_user"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>
