@@ -18,6 +18,7 @@ public interface BookingMapper {
     @Mapping(source = "acmeUser", target = "userEmail", qualifiedByName = "getEmailFromUser")
     @Mapping(source = "bookingStartTime", target = "bookingStartTime")
     @Mapping(source = "bookingEndTime", target = "bookingEndTime")
+    @Mapping(source = "uuid", target = "uuid")
     ConfirmedBookingDTO mapConfirmedBookingFromBooking(BookingEntity bookingEntity);
 
     @Named("getNameFromRoom")

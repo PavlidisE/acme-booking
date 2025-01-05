@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1.0.4-1" author="acme_booking_db_mig" dbms="postgresql">
+        <tagDatabase tag="1.0.4-add-booking-uuid-col-tag"/>
+    </changeSet>
+
+    <changeSet id="1.0.4-2" author="acme_booking_db_mib" dbms="postgresql">
+        <addColumn tableName="booking">
+            <column name="uuid" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="booking" columnName="uuid"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1.0.4-3" author="acme_booking_db_mig" dbms="postgresql">
+        <createIndex tableName="booking" indexName="idx_uuid">
+            <column name="uuid"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="booking" indexName="idx_uuid"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
