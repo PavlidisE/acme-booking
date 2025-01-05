@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
@@ -30,4 +32,6 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
     boolean existsOverlappingBooking(@Param("roomId") Long roomId,
                                      @Param("startDate") LocalDateTime startDate,
                                      @Param("endDate") LocalDateTime endDate);
+
+    Optional<BookingEntity> findBookingEntityByUuid(UUID uuid);
 }

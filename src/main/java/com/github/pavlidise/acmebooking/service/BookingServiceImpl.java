@@ -1,5 +1,6 @@
 package com.github.pavlidise.acmebooking.service;
 
+import com.github.pavlidise.acmebooking.exception.BookingNotFoundException;
 import com.github.pavlidise.acmebooking.exception.OverlappingBookingException;
 import com.github.pavlidise.acmebooking.exception.RoomNotFoundException;
 import com.github.pavlidise.acmebooking.exception.UserNotFoundException;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -64,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public ConfirmedBookingDTO bookRoom(final BookingRequestDTO bookingRequestDTO) {
+    public ConfirmedBookingDTO createBooking(final BookingRequestDTO bookingRequestDTO) {
         RoomEntity room = findRoomByName(bookingRequestDTO.roomName());
 
         LocalDateTime bookingStartDateTime = bookingRequestDTO.bookingStartDateTime();
@@ -104,12 +106,25 @@ public class BookingServiceImpl implements BookingService {
 
     public ConfirmedBookingDTO createBooking(final RoomEntity room, final AcmeUserEntity user,
                                              final LocalDateTime bookingStartDateTime, final LocalDateTime bookingEndDateTime) {
-        BookingEntity booking = BookingEntity.builder()
+        BookingEntity newBooking = BookingEntity.builder()
                 .room(room)
                 .acmeUser(user)
                 .bookingStartTime(bookingStartDateTime)
                 .bookingEndTime(bookingEndDateTime)
                 .build();
-        return BookingMapper.INSTANCE.mapConfirmedBookingFromBooking(bookingRepository.saveAndFlush(booking));
+        return BookingMapper.INSTANCE.mapConfirmedBookingFromBooking(bookingRepository.saveAndFlush(newBooking));
+    }
+
+    @Override
+    public void deleteBooking(UUID uuid) {
+        Optional<BookingEntity> optionalBookingEntity = bookingRepository.findBookingEntityByUuid(uuid);
+
+        if(optionalBookingEntity.isEmpty()){
+            final String errorMsg = String.format("No Booking found with UUID: %s", uuid);
+            log.warn(errorMsg);
+            throw new BookingNotFoundException(errorMsg);
+        }
+
+        bookingRepository.delete(optionalBookingEntity.get());
     }
 }
