@@ -1,8 +1,8 @@
 package com.github.pavlidise.acmebooking.model.dto;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
@@ -17,6 +17,6 @@ public record BookingRequestDTO(
         @Future
         LocalDateTime bookingStartDateTime,
 
-        @Positive int numberOfHours
+        @Min(1) int numberOfHours
 ) {
 }

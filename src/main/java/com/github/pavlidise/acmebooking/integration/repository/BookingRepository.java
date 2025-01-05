@@ -26,7 +26,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
     @Query(value =
             "SELECT COUNT(b) > 0 FROM booking b WHERE b.room_id = :roomId " +
-            "AND b.booking_end_time > :startDate AND b.booking_start_time < :endDate", nativeQuery = true)
+            "AND b.booking_end_time >= :startDate AND b.booking_start_time <= :endDate", nativeQuery = true)
     boolean existsOverlappingBooking(@Param("roomId") Long roomId,
                                      @Param("startDate") LocalDateTime startDate,
                                      @Param("endDate") LocalDateTime endDate);
