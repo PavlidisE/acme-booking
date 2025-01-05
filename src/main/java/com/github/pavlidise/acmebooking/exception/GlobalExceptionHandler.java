@@ -1,7 +1,9 @@
 package com.github.pavlidise.acmebooking.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -58,6 +60,20 @@ public class GlobalExceptionHandler {
     public String handleIllegalArgumentException(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {
         log.error("Handling MethodArgumentTypeMismatchException with: {}", methodArgumentTypeMismatchException.getMessage());
         return methodArgumentTypeMismatchException.getMessage();
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException httpMessageNotReadableException) {
+        log.error("Handling HttpMessageNotReadableException caused by: {}", httpMessageNotReadableException.getMessage());
+        return httpMessageNotReadableException.getMessage();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
+        log.error("Handling ConstraintViolationException caused by: {}", constraintViolationException.getMessage());
+        return constraintViolationException.getMessage();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

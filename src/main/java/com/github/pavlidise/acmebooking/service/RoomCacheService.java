@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface RoomCacheService {
 
-    Optional<RoomEntity> getRoomByName(String roomName);
+    Optional<RoomEntity> getRoomByName(final String roomName);
 }
