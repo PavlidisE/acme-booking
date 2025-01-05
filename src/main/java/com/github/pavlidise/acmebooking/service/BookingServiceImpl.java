@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
     private RoomEntity findRoomByName(final String roomName){
         Optional<RoomEntity> roomByName = roomCacheService.getRoomByName(roomName);
         if(roomByName.isEmpty()){
-            final String errorMsg = String.format("Room with name: %s not found", roomByName);
+            final String errorMsg = String.format("Room with name: %s not found", roomName);
             log.warn(errorMsg);
             throw new RoomNotFoundException(errorMsg);
         }
@@ -72,14 +72,11 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime bookingStartDateTime = bookingRequestDTO.bookingStartDateTime();
         LocalDateTime bookingEndDateTime = bookingStartDateTime.plusHours(bookingRequestDTO.numberOfHours());
 
-//        validate room availability
         validateRoomAvailability(room, bookingStartDateTime, bookingEndDateTime);
 
-//        getUser
         // in a real scenario we would get this information from JWT or similar auth information
         AcmeUserEntity user = findUserByEmail(bookingRequestDTO.userEmail());
 
-//        make booking
         return createBooking(room, user, bookingStartDateTime, bookingEndDateTime);
     }
 
@@ -96,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
     private AcmeUserEntity findUserByEmail(final String userEmail) {
         Optional<AcmeUserEntity> optionalAcmeUser = acmeUserRepository.findByUserEmail(userEmail);
         if (optionalAcmeUser.isEmpty()) {
-            final String errorMsg = String.format("User with email: %s does not exist", userEmail);
+            final String errorMsg = String.format("User with email: %s not found", userEmail);
             log.warn(errorMsg);
             throw new UserNotFoundException(errorMsg);
         }
