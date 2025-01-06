@@ -4,10 +4,13 @@ import com.github.pavlidise.acmebooking.model.dto.BookingInquiryDTO;
 import com.github.pavlidise.acmebooking.model.dto.BookingRequestDTO;
 import com.github.pavlidise.acmebooking.model.dto.ConfirmedBookingDTO;
 import com.github.pavlidise.acmebooking.service.BookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,7 @@ import java.util.UUID;
 @Validated
 @RestController
 @RequestMapping("api/v1/bookings")
+@Tag(name = "ACME Booking REST API")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -38,7 +42,13 @@ public class BookingController {
      * @param bookingInquiryDTO DTO consisting of room name and date to filter bookings
      * @return a list of ConfirmedBookingDTO(Bookings) matching the criteria
      */
-    @GetMapping(consumes = "application/json", produces = "application/json")
+    @Operation(summary = "Receives a booking inquiry request, containing room and date filters, in JSON format.",
+            description = """
+                    Validates incoming request and proceeds with the search of bookings based on the provided filters.
+                    If at any point during that process an error occurs, an appropriate message is returned.
+                    Else it returns any found bookings.
+                    """)
+    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ConfirmedBookingDTO>> searchBookings(@Valid @RequestBody BookingInquiryDTO bookingInquiryDTO) {
         log.info("Searching for bookings with criteria: {}", bookingInquiryDTO);
         List<ConfirmedBookingDTO> confirmedBookingDTOList = bookingService.searchBookings(bookingInquiryDTO);
@@ -52,7 +62,13 @@ public class BookingController {
      * @param bookingRequestDTO the booking reservation details
      * @return the confirmed booking details
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @Operation(summary = "Receives a booking creation request, containing room, date time and user info, in JSON format.",
+            description = """
+                    Validates incoming request and proceeds with the creation of the booking based on provided info.
+                    If at any point during that process an error occurs, an appropriate message is returned.
+                    Else it returns the newly created booking.
+                    """)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConfirmedBookingDTO> createBooking(@Valid @RequestBody BookingRequestDTO bookingRequestDTO) {
         log.info("Creating a booking with details: {}", bookingRequestDTO);
         ConfirmedBookingDTO confirmedBookingDTO = bookingService.createBooking(bookingRequestDTO);
@@ -68,6 +84,12 @@ public class BookingController {
      * @param uuid the UUID of the booking to be deleted
      * @return a response message indicating the result of the operation
      */
+    @Operation(summary = "Receives a request for booking deletion, based on booking UUID.",
+            description = """
+                    Validates the path parameter input as a UUID and proceeds with the deletion of the matching booking, if exists.
+                    If at any point during that process an error occurs, an appropriate message is returned.
+                    Else it returns a positive message.
+                    """)
     @DeleteMapping
     public ResponseEntity<String> deleteBooking(@PathParam(value = "uuid") @Valid @NotNull UUID uuid) {
         log.info("Deleting booking with UUID: {}", uuid);

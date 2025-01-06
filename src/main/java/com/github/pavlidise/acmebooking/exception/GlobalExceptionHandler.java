@@ -48,6 +48,13 @@ public class GlobalExceptionHandler {
         return userNotFoundException.getMessage();
     }
 
+    @ExceptionHandler(PastBookingDeletionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handlePastBookingDeletionException(PastBookingDeletionException pastBookingDeletionException){
+        log.warn("Handling PastBookingDeletionException");
+        return pastBookingDeletionException.getMessage();
+    }
+
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleDateTimeParseException(DateTimeParseException dateTimeParseException) {

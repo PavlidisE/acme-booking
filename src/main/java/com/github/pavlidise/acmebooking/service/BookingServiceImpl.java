@@ -2,6 +2,7 @@ package com.github.pavlidise.acmebooking.service;
 
 import com.github.pavlidise.acmebooking.exception.BookingNotFoundException;
 import com.github.pavlidise.acmebooking.exception.OverlappingBookingException;
+import com.github.pavlidise.acmebooking.exception.PastBookingDeletionException;
 import com.github.pavlidise.acmebooking.exception.RoomNotFoundException;
 import com.github.pavlidise.acmebooking.exception.UserNotFoundException;
 import com.github.pavlidise.acmebooking.integration.repository.AcmeUserRepository;
@@ -68,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
         Optional<RoomEntity> roomByName = roomCacheService.getRoomByName(roomName);
         if(roomByName.isEmpty()){
             final String errorMsg = String.format("Room with name: %s not found", roomName);
-            log.warn(errorMsg);
+            log.error(errorMsg);
             throw new RoomNotFoundException(errorMsg);
         }
         return roomByName.get();
@@ -123,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
 
         if (existsOverlappingBooking) {
             final String errorMsg = String.format("Room: '%s' is already booked during the requested period", room.getRoomName());
-            log.warn(errorMsg);
+            log.error(errorMsg);
             throw new OverlappingBookingException(errorMsg);
         }
     }
@@ -140,7 +141,7 @@ public class BookingServiceImpl implements BookingService {
         Optional<AcmeUserEntity> optionalAcmeUser = acmeUserRepository.findByUserEmail(userEmail);
         if (optionalAcmeUser.isEmpty()) {
             final String errorMsg = String.format("User with email: %s not found", userEmail);
-            log.warn(errorMsg);
+            log.error(errorMsg);
             throw new UserNotFoundException(errorMsg);
         }
 
@@ -181,10 +182,21 @@ public class BookingServiceImpl implements BookingService {
         Optional<BookingEntity> optionalBookingEntity = bookingRepository.findBookingEntityByUuid(uuid);
         if(optionalBookingEntity.isEmpty()){
             final String errorMsg = String.format("No Booking found with UUID: %s", uuid);
-            log.warn(errorMsg);
+            log.error(errorMsg);
             throw new BookingNotFoundException(errorMsg);
         }
+        BookingEntity booking = optionalBookingEntity.get();
+        validateBookingIsInTheFuture(booking);
+        
+        bookingRepository.delete(booking);
+    }
 
-        bookingRepository.delete(optionalBookingEntity.get());
+    private void validateBookingIsInTheFuture(BookingEntity booking) {
+        log.info("Validating Booking is not in the past");
+        if(booking.getBookingStartTime().isBefore(LocalDateTime.now())){
+            final String errorMsg = String.format("Booking with UUID: %s is past, can not delete past bookings", booking.getUuid());
+            log.error(errorMsg);
+            throw new PastBookingDeletionException(errorMsg);
+        }
     }
 }
