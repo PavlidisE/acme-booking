@@ -26,7 +26,6 @@ public class RoomCacheServiceImpl implements RoomCacheService {
     public Optional<RoomEntity> getRoomByName(final String roomName) {
         log.debug("Querying rooms cache");
         Cache cache = cacheManager.getCache("rooms");
-        assert cache != null;
         RoomEntity roomEntity = cache.get(roomName, RoomEntity.class);
 
         // If not found in the cache, fetch from the database and cache the result
