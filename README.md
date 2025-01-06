@@ -195,15 +195,16 @@ To cancel a booking, send a DELETE request to /api/v1/bookings with the uuid par
 DELETE /api/v1/bookings?uuid=<booking-uuid>
 ```
 
-## Things To Improve
+## Future Enhancements
 
-- REST API
-    - SSL
-    - Authentication (out of scope but still.)
-- Repository
-    - Audit Traffic
-    - Opt for query building (more fine-grained) approach,
-      instead of hard-coded queries, for extensibility.
-    - Add Retention policy on past bookings
-- Time
-    - Potentially using Zoned Datetime for everything and configuring on deployment could be better.
+- REST API:
+  - Implement SSL for secure communication.
+  - Add authentication mechanisms. 
+
+- Repository:
+  - Opt for query building (more fine-grained) approach, instead of hard-coded queries, for extensibility.
+  - Implement a retention policy on past bookings.
+  - Enable audit logging for traffic monitoring.
+  
+- Time:
+  - Consider using Zoned Datetime for all time-related data and configure it during deployment for better time zone management.
