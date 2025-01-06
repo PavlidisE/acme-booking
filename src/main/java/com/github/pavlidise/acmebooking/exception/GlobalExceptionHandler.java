@@ -55,13 +55,6 @@ public class GlobalExceptionHandler {
         return pastBookingDeletionException.getMessage();
     }
 
-    @ExceptionHandler(DateTimeParseException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleDateTimeParseException(DateTimeParseException dateTimeParseException) {
-        log.error("Handling DateTimeParseException with: {}", dateTimeParseException.getMessage());
-        return dateTimeParseException.getMessage();
-    }
-
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleIllegalArgumentException(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {

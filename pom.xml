@@ -48,6 +48,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <!-- Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <!-- Database -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -116,6 +121,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
             <version>${spock.version}</version>
@@ -163,7 +173,15 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+                    <jvmArguments>
+                        -Dspring.application.admin.enabled=true
+                        -Dspring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+                        -Dspring.datasource.driverClassName=org.h2.Driver
+                        -Dspring.datasource.username=sa
+                        -Dspring.datasource.password=password
+                        -Dspring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+                        -Dspring.jpa.hibernate.ddl-auto=create-drop
+                    </jvmArguments>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -173,8 +191,14 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>pre-integration-test</id>
                         <goals>
                             <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
                             <goal>stop</goal>
                         </goals>
                     </execution>
@@ -193,6 +217,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <outputFileName>booking-api.json</outputFileName>
+                </configuration>
             </plugin>
             <!-- Enables integration of Groovy code during Maven build lifecycle -->
             <plugin>
@@ -232,6 +259,7 @@
                         <exclude>**/configuration/**</exclude>
                         <exclude>**/repository/**</exclude>
                         <exclude>**/model/**</exclude>
+                        <exclude>**/mapper/**</exclude>
                         <exclude>**/AcmeBookingApplication.class</exclude>
                     </excludes>
                 </configuration>
