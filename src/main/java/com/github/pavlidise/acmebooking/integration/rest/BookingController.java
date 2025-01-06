@@ -5,6 +5,8 @@ import com.github.pavlidise.acmebooking.model.dto.BookingRequestDTO;
 import com.github.pavlidise.acmebooking.model.dto.ConfirmedBookingDTO;
 import com.github.pavlidise.acmebooking.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -42,12 +44,17 @@ public class BookingController {
      * @param bookingInquiryDTO DTO consisting of room name and date to filter bookings
      * @return a list of ConfirmedBookingDTO(Bookings) matching the criteria
      */
-    @Operation(summary = "Receives a booking inquiry request, containing room and date filters, in JSON format.",
+    @Operation(summary = "Search Bookings, based on room and date",
             description = """
                     Validates incoming request and proceeds with the search of bookings based on the provided filters.
                     If at any point during that process an error occurs, an appropriate message is returned.
                     Else it returns any found bookings.
                     """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved bookings", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ConfirmedBookingDTO>> searchBookings(@Valid @RequestBody BookingInquiryDTO bookingInquiryDTO) {
         log.info("Searching for bookings with criteria: {}", bookingInquiryDTO);
@@ -62,12 +69,19 @@ public class BookingController {
      * @param bookingRequestDTO the booking reservation details
      * @return the confirmed booking details
      */
-    @Operation(summary = "Receives a booking creation request, containing room, date time and user info, in JSON format.",
+    @Operation(summary = "Create new Booking",
             description = """
                     Validates incoming request and proceeds with the creation of the booking based on provided info.
                     If at any point during that process an error occurs, an appropriate message is returned.
                     Else it returns the newly created booking.
                     """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully created booking", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "409", description = "Overlapping booking"),
+            @ApiResponse(responseCode = "404", description = "Room or User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConfirmedBookingDTO> createBooking(@Valid @RequestBody BookingRequestDTO bookingRequestDTO) {
         log.info("Creating a booking with details: {}", bookingRequestDTO);
@@ -84,12 +98,19 @@ public class BookingController {
      * @param uuid the UUID of the booking to be deleted
      * @return a response message indicating the result of the operation
      */
-    @Operation(summary = "Receives a request for booking deletion, based on booking UUID.",
+    @Operation(summary = "Delete Booking, based on UUID",
             description = """
                     Validates the path parameter input as a UUID and proceeds with the deletion of the matching booking, if exists.
                     If at any point during that process an error occurs, an appropriate message is returned.
                     Else it returns a positive message.
                     """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully deleted booking", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Invalid UUID"),
+            @ApiResponse(responseCode = "403", description = "Forbidden to delete past booking"),
+            @ApiResponse(responseCode = "404", description = "Booking not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @DeleteMapping
     public ResponseEntity<String> deleteBooking(@PathParam(value = "uuid") @Valid @NotNull UUID uuid) {
         log.info("Deleting booking with UUID: {}", uuid);

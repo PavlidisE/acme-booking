@@ -43,7 +43,8 @@ services:
     volumes:
       - ./src/main/resources/liquibase:/liquibase/migrations
     command:
-      - update-testing-rollback
+#      - update-testing-rollback # disabled for "prod"
+      - update
     env_file:
       - docker.env
     environment:
