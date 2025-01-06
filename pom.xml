@@ -23,6 +23,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.surefire.version>3.5.0</maven.surefire.version>
+        <gmavenplus.version>4.1.1</gmavenplus.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <postgres.version>42.7.4</postgres.version>
@@ -155,12 +156,9 @@
                             <version>${mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <compilerArgs>
-                        <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
-                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
+            <!-- Specifically for Spring Boot, packages and runs the application -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -196,7 +194,21 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Executes (mostly unit) tests during test phase of build lifecycle -->
+            <!-- Enables integration of Groovy code during Maven build lifecycle -->
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>${gmavenplus.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>addTestSources</goal>
+                            <goal>compileTests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Executes tests during test phase of build lifecycle -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -217,12 +229,10 @@
                 <version>0.8.12</version>
                 <configuration>
                     <excludes>
-                        <!-- TODO -->
                         <exclude>**/configuration/**</exclude>
+                        <exclude>**/repository/**</exclude>
                         <exclude>**/model/**</exclude>
-                        <exclude>**/entity/**</exclude>
-                        <exclude>**/exception/**</exclude>
-                        <exclude>**/utils/**</exclude>
+                        <exclude>**/AcmeBookingApplication.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
